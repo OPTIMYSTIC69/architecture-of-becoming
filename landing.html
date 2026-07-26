@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-gumroad-field="name">The Architecture of Becoming</title>
+<meta name="description" content="A nine-layer framework for designing an identity built to last.">
+<style>
+  :root{
+    --bg:#ECE6D6;
+    --bg-alt:#E2D9C2;
+    --card:#F5F0E3;
+    --ink:#1F2B38;
+    --ink-soft:#46586B;
+    --ink-faint:#7A8B9C;
+    --gold:#8C6A30;
+    --gold-bright:#B8935B;
+    --rule:rgba(31,43,56,0.16);
+    --rule-strong:rgba(31,43,56,0.34);
+    --shadow:rgba(31,43,56,0.10);
+    --font-display:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
+    --font-body:Georgia,'Iowan Old Style',Palatino,'Times New Roman',serif;
+    --font-mono:ui-monospace,'SF Mono','Cascadia Mono',Consolas,'Liberation Mono',monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F2136;
+      --bg-alt:#16324F;
+      --card:#122A44;
+      --ink:#E8EEF4;
+      --ink-soft:#A9BBCC;
+      --ink-faint:#7891A8;
+      --gold:#D4AF6A;
+      --gold-bright:#E8C784;
+      --rule:rgba(232,238,244,0.16);
+      --rule-strong:rgba(232,238,244,0.34);
+      --shadow:rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F2136;
+    --bg-alt:#16324F;
+    --card:#122A44;
+    --ink:#E8EEF4;
+    --ink-soft:#A9BBCC;
+    --ink-faint:#7891A8;
+    --gold:#D4AF6A;
+    --gold-bright:#E8C784;
+    --rule:rgba(232,238,244,0.16);
+    --rule-strong:rgba(232,238,244,0.34);
+    --shadow:rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.6;
+    transition:background 0.4s ease, color 0.4s ease;
+  }
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+  .wrap-wide{max-width:900px;margin:0 auto;padding:0 24px;}
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  /* Header */
+  header.site{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px 24px;
+    border-bottom:1px solid var(--rule);
+  }
+  .brand{
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .theme-toggle{
+    width:38px;height:38px;
+    display:flex;align-items:center;justify-content:center;
+    background:transparent;
+    border:1px solid var(--rule-strong);
+    border-radius:2px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .theme-toggle:hover{border-color:var(--gold);}
+  .theme-toggle svg{width:18px;height:18px;}
+  .theme-toggle .moon{display:none;}
+  :root[data-theme="dark"] .theme-toggle .sun{display:none;}
+  :root[data-theme="dark"] .theme-toggle .moon{display:block;}
+
+  /* Hero */
+  .hero{
+    padding:72px 0 56px;
+    text-align:center;
+    border-bottom:1px solid var(--rule);
+  }
+  .hero .eyebrow{display:block;margin-bottom:18px;}
+  .hero h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(2.1rem, 5vw, 3.4rem);
+    line-height:1.08;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .hero .subtitle{
+    font-family:var(--font-display);
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:clamp(1.05rem, 2vw, 1.3rem);
+    margin:0 0 30px;
+  }
+  .hero .thesis{
+    max-width:560px;
+    margin:0 auto 36px;
+    font-size:1.08rem;
+    color:var(--ink-soft);
+  }
+  .byline{
+    font-family:var(--font-mono);
+    font-size:0.74rem;
+    letter-spacing:0.06em;
+    color:var(--ink-faint);
+    margin-top:26px;
+  }
+
+  .buy-btn{
+    font-family:var(--font-mono);
+    font-size:0.92rem;
+    letter-spacing:0.03em;
+    background:var(--ink);
+    color:var(--bg);
+    border:1px solid var(--ink);
+    padding:15px 30px;
+    cursor:pointer;
+    border-radius:2px;
+    transition:transform 0.15s ease, background 0.2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+  }
+  :root[data-theme="dark"] .buy-btn{background:var(--gold);color:#0F2136;border-color:var(--gold);}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .buy-btn{background:var(--gold);color:#0F2136;border-color:var(--gold);}
+  }
+  .buy-btn:hover{transform:translateY(-2px);}
+  .buy-price{font-weight:700;}
+  .fine-print{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    margin-top:14px;
+  }
+
+  /* Generic section */
+  section{padding:64px 0;border-bottom:1px solid var(--rule);}
+  section:last-of-type{border-bottom:none;}
+  .section-head{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:clamp(1.5rem, 3vw, 2rem);
+    margin:0 0 22px;
+  }
+  section p{font-size:1.04rem;color:var(--ink-soft);margin:0 0 16px;}
+  section p:last-child{margin-bottom:0;}
+
+  /* Elevation diagram */
+  .architecture-intro{max-width:640px;margin:0 auto 46px;text-align:center;}
+  .architecture-intro .section-head{margin-bottom:14px;}
+  .elevation{
+    display:flex;
+    flex-direction:column-reverse;
+    border:1px solid var(--rule-strong);
+    background:var(--card);
+    box-shadow:0 12px 32px var(--shadow);
+  }
+  .layer{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:18px;
+    padding:20px 22px;
+    border-top:1px solid var(--rule);
+  }
+  .layer:first-child{border-top:none;}
+  .layer .num{
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    color:var(--gold);
+    padding-top:3px;
+  }
+  .layer .name{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:block;
+    margin-bottom:4px;
+  }
+  .layer .title{
+    font-family:var(--font-display);
+    font-size:1.12rem;
+    margin:0 0 4px;
+  }
+  .layer .model{
+    font-family:var(--font-mono);
+    font-size:0.8rem;
+    color:var(--ink-faint);
+  }
+  .layer .model::before{content:"\25B8  ";color:var(--gold);}
+
+  @media (prefers-reduced-motion: no-preference){
+    .layer{opacity:0;transform:translateY(14px);transition:opacity 0.55s ease, transform 0.55s ease;}
+    .elevation.in-view .layer{opacity:1;transform:none;}
+    .elevation.in-view .layer:nth-child(1){transition-delay:0ms;}
+    .elevation.in-view .layer:nth-child(2){transition-delay:70ms;}
+    .elevation.in-view .layer:nth-child(3){transition-delay:140ms;}
+    .elevation.in-view .layer:nth-child(4){transition-delay:210ms;}
+    .elevation.in-view .layer:nth-child(5){transition-delay:280ms;}
+    .elevation.in-view .layer:nth-child(6){transition-delay:350ms;}
+    .elevation.in-view .layer:nth-child(7){transition-delay:420ms;}
+    .elevation.in-view .layer:nth-child(8){transition-delay:490ms;}
+    .elevation.in-view .layer:nth-child(9){transition-delay:560ms;}
+  }
+
+  /* For whom */
+  .for-whom .wrap{max-width:640px;}
+
+  /* Description pullquote */
+  .pullquote blockquote{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:1.2rem;
+    color:var(--ink);
+    border-left:2px solid var(--gold);
+    padding-left:22px;
+    margin:0;
+    max-width:640px;
+  }
+
+  /* Series */
+  .series .wrap{max-width:640px;}
+  .series-list{
+    list-style:none;
+    padding:0;margin:22px 0 0;
+    font-family:var(--font-mono);
+    font-size:0.85rem;
+    color:var(--ink-faint);
+  }
+  .series-list li{padding:8px 0;border-top:1px solid var(--rule);}
+  .series-list li:first-child{border-top:none;}
+  .series-list strong{color:var(--ink-soft);font-family:var(--font-body);font-style:italic;}
+
+  /* Final CTA */
+  .final-cta{text-align:center;}
+  .final-cta .wrap{max-width:560px;}
+  .final-cta p{margin-bottom:28px;}
+
+  footer{
+    padding:30px 24px 40px;
+    text-align:center;
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    color:var(--ink-faint);
+  }
+
+  @media (max-width:560px){
+    .hero{padding:52px 0 42px;}
+    section{padding:48px 0;}
+    .layer{grid-template-columns:44px 1fr;gap:12px;padding:16px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <span class="brand">Opti Mystic Publications</span>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle colour theme">
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.5 12H2.1M21.9 12h-2.4M6 6l1.7 1.7M16.3 16.3 18 18M18 6l-1.7 1.7M7.7 16.3 6 18"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 0 0 10.5 10.5Z"/></svg>
+  </button>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Opti Mystic Publications &middot; Volume III</span>
+      <h1 data-gumroad-field="name">The Architecture of Becoming</h1>
+      <p class="subtitle">Designing the Identity That Your Future Requires</p>
+      <p class="thesis">Most people treat change as an event: a decision, a declaration, a Monday. This book treats it as construction. Nine layers, each one load bearing, each one visible before you commit to building it.</p>
+      <button class="buy-btn" data-gumroad-action="buy" type="button">
+        Buy the book &middot; <span class="buy-price" data-gumroad-field="price">$14.99</span>
+      </button>
+      <p class="fine-print">Instant digital delivery.</p>
+      <p class="byline">Written by Sydwill Saaiman</p>
+    </div>
+  </section>
+
+  <section class="problem">
+    <div class="wrap">
+      <h2 class="section-head">You keep starting over</h2>
+      <p>Every reset looks different. A new planner. A new therapist. A new version of the same promise to yourself. And for a while it holds, until the first real pressure finds the one thing that was never actually built to bear weight, and the old self reappears exactly where you left it.</p>
+      <p>The problem was never willpower. It was that nothing underneath the new behaviour was designed to hold it there.</p>
+    </div>
+  </section>
+
+  <section class="architecture" id="architecture">
+    <div class="architecture-intro">
+      <h2 class="section-head">Nine layers. One structure.</h2>
+      <p>The Architecture of Becoming treats identity change as a build, not a decision. Each chapter adds one load bearing layer, in order, so that what you construct in chapter nine can still be standing in chapter twelve of your actual life.</p>
+    </div>
+    <div class="wrap-wide">
+      <div class="elevation" id="elevation">
+        <article class="layer">
+          <span class="num">01</span>
+          <div>
+            <span class="name">Foundation</span>
+            <h3 class="title">Blueprint Before Behaviour</h3>
+            <p class="model">The Future Evidence Method</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">02</span>
+          <div>
+            <span class="name">Identity</span>
+            <h3 class="title">Building an Identity That Can Last</h3>
+            <p class="model">The Identity Blueprint</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">03</span>
+          <div>
+            <span class="name">Attention</span>
+            <h3 class="title">Designing Attention</h3>
+            <p class="model">The Attention Architecture</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">04</span>
+          <div>
+            <span class="name">Meaning</span>
+            <h3 class="title">Meaning as Structural Support</h3>
+            <p class="model">The Meaning Compass</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">05</span>
+          <div>
+            <span class="name">Environment</span>
+            <h3 class="title">The Ecology of Environment</h3>
+            <p class="model">The Environment Matrix</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">06</span>
+          <div>
+            <span class="name">Behaviour</span>
+            <h3 class="title">The Systems of Daily Practice</h3>
+            <p class="model">The Integrity Loop</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">07</span>
+          <div>
+            <span class="name">Adaptation</span>
+            <h3 class="title">Adapting Without Losing Yourself</h3>
+            <p class="model">The Adaptation Cycle</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">08</span>
+          <div>
+            <span class="name">Integration</span>
+            <h3 class="title">Living as One Coherent Person</h3>
+            <p class="model">The Coherence Index</p>
+          </div>
+        </article>
+        <article class="layer">
+          <span class="num">09</span>
+          <div>
+            <span class="name">Legacy</span>
+            <h3 class="title">Designing Beyond Yourself</h3>
+            <p class="model">The Legacy Horizon</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="for-whom">
+    <div class="wrap">
+      <h2 class="section-head">Written for the already self-aware</h2>
+      <p>This is not an introduction to psychology. It assumes you have already done some of the work: the journaling, the therapy, the pattern recognition. You can name your patterns. You still cannot hold the new behaviour under real pressure.</p>
+      <p>That gap, between insight and structure, is what this book is built to close.</p>
+    </div>
+  </section>
+
+  <section class="pullquote">
+    <div class="wrap">
+      <blockquote data-gumroad-field="description">A nine-layer framework for designing an identity built to last, drawing behavioural psychology and structural thinking into one working system for lasting change.</blockquote>
+    </div>
+  </section>
+
+  <section class="series">
+    <div class="wrap">
+      <h2 class="section-head">Book three of a trilogy on identity change</h2>
+      <p>Each title stands alone, and each asks a different question about why change does or doesn't hold.</p>
+      <ul class="series-list">
+        <li><strong>The Gravity of the Familiar</strong> &middot; why we return to old patterns</li>
+        <li><strong>Beyond Gravity</strong> &middot; how we loosen their pull</li>
+        <li><strong>The Architecture of Becoming</strong> &middot; how we build an identity sturdy enough to become the new familiar</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <div class="wrap">
+      <h2 class="section-head">The house you continue to build</h2>
+      <p>You will not finish this book and feel instantly transformed. You will finish it with a structure, and structures hold long after motivation leaves the room.</p>
+      <button class="buy-btn" data-gumroad-action="buy" type="button">
+        Buy the book &middot; <span class="buy-price" data-gumroad-field="price">$14.99</span>
+      </button>
+      <p class="fine-print">Instant digital delivery.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &copy; Optimystic Publications, Cape Town
+</footer>
+
+<script>
+  (function(){
+    var root = document.documentElement;
+    var toggle = document.getElementById('themeToggle');
+    var stored = null;
+    try { stored = localStorage.getItem('theme'); } catch(e) {}
+    if (stored === 'light' || stored === 'dark') root.setAttribute('data-theme', stored);
+
+    toggle.addEventListener('click', function(){
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var current = root.getAttribute('data-theme') || (prefersDark ? 'dark' : 'light');
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch(e) {}
+    });
+  })();
+
+  (function(){
+    var el = document.getElementById('elevation');
+    if (!el) return;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { el.classList.add('in-view'); return; }
+    if (!('IntersectionObserver' in window)) { el.classList.add('in-view'); return; }
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          el.classList.add('in-view');
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.15 });
+    observer.observe(el);
+  })();
+</script>
+
+</body>
+</html>
